@@ -132,6 +132,20 @@ public class TargetingLocationService {
         return List.of();
     }
 
+    // 타겟팅 위치별 고객 수 조회 (간단한 버전)
+    public Long getCustomerCountByTargeting(UUID targetingId) {
+        Optional<TargetingLocation> targetingLocation = targetingLocationRepository.findById(targetingId);
+        if (targetingLocation.isPresent()) {
+            TargetingLocation location = targetingLocation.get();
+            return customerRepository.countCustomersInRadius(
+                location.getCenterLat(),
+                location.getCenterLng(),
+                location.getRadiusM()
+            );
+        }
+        return 0L;
+    }
+
     // 타겟팅 위치별 캠페인 목록 조회
     public List<Map<String, Object>> getCampaignsByTargeting(UUID targetingId) {
         return campaignRepository.findByTargetingLocationId(targetingId);

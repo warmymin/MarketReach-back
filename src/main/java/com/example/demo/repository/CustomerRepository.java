@@ -67,8 +67,8 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
      * 반경 내 고객 조회 (거리 정보 포함)
      */
     @Query(value = "SELECT c.id, c.name, c.phone, c.lat, c.lng, " +
-                   "ROUND((6371000 * acos(cos(radians(:lat)) * cos(radians(c.lat)) * " +
-                   "cos(radians(c.lng) - radians(:lng)) + sin(radians(:lat)) * sin(radians(c.lat)))) / 1000, 2) as distance " +
+                   "CAST((6371000 * acos(cos(radians(:lat)) * cos(radians(c.lat)) * " +
+                   "cos(radians(c.lng) - radians(:lng)) + sin(radians(:lat)) * sin(radians(c.lat)))) / 1000 AS DECIMAL(10,2)) as distance " +
                    "FROM customers c " +
                    "WHERE (6371000 * acos(cos(radians(:lat)) * cos(radians(c.lat)) * " +
                    "cos(radians(c.lng) - radians(:lng)) + sin(radians(:lat)) * sin(radians(c.lat)))) <= :radiusM " +

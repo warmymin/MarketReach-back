@@ -256,6 +256,25 @@ public class TargetingLocationController {
         }
     }
 
+    // 타겟팅 위치별 고객 수 조회
+    @GetMapping("/{id}/customer-count")
+    public ResponseEntity<Map<String, Object>> getCustomerCountByTargeting(@PathVariable UUID id) {
+        try {
+            Long customerCount = targetingLocationService.getCustomerCountByTargeting(id);
+            
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", customerCount);
+            
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "타겟팅 위치별 고객 수 조회 실패: " + e.getMessage());
+            return ResponseEntity.badRequest().body(response);
+        }
+    }
+
     // 타겟팅 위치별 캠페인 목록 조회
     @GetMapping("/{id}/campaigns")
     public ResponseEntity<Map<String, Object>> getCampaignsByTargeting(@PathVariable UUID id) {
