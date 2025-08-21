@@ -107,6 +107,14 @@ public class CampaignController {
             campaign.setStatus("DRAFT"); // 기본 상태
             campaign.setTargetingLocation(targetingLocation);
             
+            // 이미지 정보 설정 (선택적)
+            if (requestData.get("imageUrl") != null) {
+                campaign.setImageUrl((String) requestData.get("imageUrl"));
+            }
+            if (requestData.get("imageAlt") != null) {
+                campaign.setImageAlt((String) requestData.get("imageAlt"));
+            }
+            
             // 회사 설정 (타겟팅 위치가 있으면 해당 회사, 없으면 기본 회사)
             if (targetingLocation != null) {
                 campaign.setCompany(targetingLocation.getCompany());
@@ -290,6 +298,18 @@ public class CampaignController {
                 if (targetingLocationOpt.isPresent()) {
                     existingCampaign.setTargetingLocation(targetingLocationOpt.get());
                 }
+            }
+            
+            // 이미지 정보 업데이트 (선택적)
+            if (requestData.get("imageUrl") != null) {
+                String imageUrl = (String) requestData.get("imageUrl");
+                System.out.println("이미지 URL 업데이트: " + imageUrl);
+                existingCampaign.setImageUrl(imageUrl);
+            }
+            if (requestData.get("imageAlt") != null) {
+                String imageAlt = (String) requestData.get("imageAlt");
+                System.out.println("이미지 Alt 업데이트: " + imageAlt);
+                existingCampaign.setImageAlt(imageAlt);
             }
             
             // 상태 업데이트 (선택적)

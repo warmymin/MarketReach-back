@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,9 +42,11 @@ public class Campaign {
     private String description;
     
     @Column(columnDefinition = "TEXT")
+    @JsonProperty("imageUrl")
     private String imageUrl; // 이미지 URL 저장
     
     @Column(columnDefinition = "TEXT")
+    @JsonProperty("imageAlt")
     private String imageAlt; // 이미지 대체 텍스트
     
     @Enumerated(EnumType.STRING)

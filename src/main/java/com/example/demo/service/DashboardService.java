@@ -35,27 +35,43 @@ public class DashboardService {
             // 1. 총 캠페인 수
             long totalCampaigns = campaignRepository.count();
             
-            // 2. 발송된 메시지 수
-            long totalMessages = deliveryRepository.count();
+            // 2. 발송 통계 (실제 데이터)
+            long totalDeliveries = deliveryRepository.count();
+            long sentCount = deliveryRepository.countByStatus(Delivery.DeliveryStatus.SENT);
+            long failedCount = deliveryRepository.countByStatus(Delivery.DeliveryStatus.FAILED);
+            long pendingCount = deliveryRepository.countByStatus(Delivery.DeliveryStatus.PENDING);
             
             // 3. 도달한 고객 수 (SENT 상태인 고유 customer_id 수)
             long reachedCustomers = deliveryRepository.countDistinctCustomerIdByStatus(Delivery.DeliveryStatus.SENT);
             
             // 4. 평균 도달률 계산
             double reachRate = 0.0;
-            if (totalMessages > 0) {
-                long sentMessages = deliveryRepository.countByStatus(Delivery.DeliveryStatus.SENT);
-                reachRate = (double) sentMessages / totalMessages * 100;
+            if (totalDeliveries > 0) {
+                reachRate = (double) sentCount / totalDeliveries * 100;
                 reachRate = Math.round(reachRate * 10.0) / 10.0; // 소수점 1자리
             }
             
+            // 5. 증감률 계산 (임시로 하드코딩, 나중에 실제 데이터로 대체)
+            double totalChange = 8.0; // +8%
+            double successChange = 12.0; // +12%
+            double failureChange = -5.0; // -5%
+            double pendingChange = 15.0; // +15%
+            
+            Map<String, Object> data = new HashMap<>();
+            data.put("totalCampaigns", totalCampaigns);
+            data.put("totalDeliveries", totalDeliveries);
+            data.put("sentCount", sentCount);
+            data.put("failedCount", failedCount);
+            data.put("pendingCount", pendingCount);
+            data.put("reachedCustomers", reachedCustomers);
+            data.put("reachRate", reachRate);
+            data.put("totalChange", totalChange);
+            data.put("successChange", successChange);
+            data.put("failureChange", failureChange);
+            data.put("pendingChange", pendingChange);
+            
             summary.put("success", true);
-            summary.put("data", Map.of(
-                "totalCampaigns", totalCampaigns,
-                "totalMessages", totalMessages,
-                "reachedCustomers", reachedCustomers,
-                "reachRate", reachRate
-            ));
+            summary.put("data", data);
             
         } catch (Exception e) {
             summary.put("success", false);
@@ -221,7 +237,7 @@ public class DashboardService {
             List<Map<String, Object>> campaignList = new ArrayList<>();
             
             for (Object[] row : campaigns) {
-                String id = (String) row[0];
+                String id = row[0].toString(); // UUID를 String으로 변환
                 String name = (String) row[1];
                 String status = (String) row[2];
                 LocalDateTime createdAt = (LocalDateTime) row[3];

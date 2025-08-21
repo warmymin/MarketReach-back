@@ -70,6 +70,13 @@ public class DeliveryService {
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new RuntimeException("캠페인을 찾을 수 없습니다."));
         
+        // 기존 발송 데이터 삭제 (중복 방지)
+        List<Delivery> existingDeliveries = deliveryRepository.findByCampaignIdOrderByCreatedAtDesc(campaignId);
+        if (!existingDeliveries.isEmpty()) {
+            System.out.println("기존 발송 데이터 " + existingDeliveries.size() + "건 삭제");
+            deliveryRepository.deleteAll(existingDeliveries);
+        }
+        
         List<Customer> targetCustomers = new ArrayList<>();
         
         // 타겟팅 위치가 있는 경우

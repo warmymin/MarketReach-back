@@ -72,4 +72,9 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
            "GROUP BY c.id, c.name, c.status, c.createdAt, tl.name " +
            "ORDER BY c.createdAt DESC")
     List<Object[]> getRecentCampaignsWithStats();
+    
+    /**
+     * 모든 캠페인을 생성일 기준 내림차순으로 조회
+     */
+    List<Campaign> findAllByOrderByCreatedAtDesc();
 }

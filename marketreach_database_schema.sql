@@ -53,6 +53,8 @@ CREATE TABLE campaigns (
     name VARCHAR(255) NOT NULL,
     message TEXT NOT NULL,
     description TEXT,
+    image_url TEXT,
+    image_alt TEXT,
     status VARCHAR(50) NOT NULL DEFAULT 'DRAFT' CHECK (status IN ('DRAFT', 'SENDING', 'COMPLETED', 'PAUSED', 'CANCELLED')),
     targeting_location_id UUID,
     company_id UUID,
