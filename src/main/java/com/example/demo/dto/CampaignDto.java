@@ -15,6 +15,8 @@ public class CampaignDto {
     private String name;
     private String message;
     private String description;
+    private String imageUrl;
+    private String imageAlt;
     private String status;
     private UUID companyId;
     private UUID targetingLocationId;

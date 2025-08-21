@@ -38,6 +38,12 @@ public class Campaign {
     @Column(columnDefinition = "TEXT")
     private String description;
     
+    @Column(columnDefinition = "TEXT")
+    private String imageUrl; // 이미지 URL 저장
+    
+    @Column(columnDefinition = "TEXT")
+    private String imageAlt; // 이미지 대체 텍스트
+    
     @Enumerated(EnumType.STRING)
     @Column
     private CampaignStatus status = CampaignStatus.DRAFT;
@@ -117,6 +123,22 @@ public class Campaign {
     
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    public String getImageUrl() {
+        return imageUrl;
+    }
+    
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+    
+    public String getImageAlt() {
+        return imageAlt;
+    }
+    
+    public void setImageAlt(String imageAlt) {
+        this.imageAlt = imageAlt;
     }
     
     public CampaignStatus getStatus() {
