@@ -144,12 +144,18 @@ public class DeliveryController {
      * 모든 발송 목록 조회
      */
     @GetMapping
-    public ResponseEntity<List<Delivery>> getAllDeliveries() {
+    public ResponseEntity<Map<String, Object>> getAllDeliveries() {
         try {
             List<Delivery> deliveries = deliveryService.getDeliveriesByStatus(DeliveryStatus.SENT);
-            return ResponseEntity.ok(deliveries);
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "data", deliveries
+            ));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "발송 목록 조회 중 오류가 발생했습니다: " + e.getMessage()
+            ));
         }
     }
 

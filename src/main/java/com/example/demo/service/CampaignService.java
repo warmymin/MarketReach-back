@@ -1,11 +1,13 @@
 package com.example.demo.service;
 
 import com.example.demo.entity.Campaign;
+import com.example.demo.entity.CampaignStatus;
 import com.example.demo.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import com.example.demo.service.DeliveryService;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -19,6 +21,9 @@ public class CampaignService {
 
     @Autowired
     private CampaignRepository campaignRepository;
+    
+    @Autowired
+    private DeliveryService deliveryService;
 
     public Campaign createCampaign(Campaign campaign) {
         return campaignRepository.save(campaign);
@@ -66,7 +71,21 @@ public class CampaignService {
                     existingCampaign.setTargetingLocation(campaignDetails.getTargetingLocation());
                 }
                 if (campaignDetails.getStatus() != null) {
+                    CampaignStatus oldStatus = existingCampaign.getStatus();
                     existingCampaign.setStatus(campaignDetails.getStatus());
+                    CampaignStatus newStatus = existingCampaign.getStatus();
+                    
+                    // 캠페인이 DRAFT에서 SENDING으로 변경되면 발송 시작
+                    if (oldStatus == CampaignStatus.DRAFT && newStatus == CampaignStatus.SENDING) {
+                        System.out.println("캠페인 발송 시작: " + id);
+                        try {
+                            deliveryService.simulateCampaignDelivery(id);
+                            System.out.println("캠페인 발송 완료: " + id);
+                        } catch (Exception e) {
+                            System.err.println("캠페인 발송 중 오류: " + e.getMessage());
+                            // 발송 실패해도 캠페인 상태는 업데이트
+                        }
+                    }
                 }
                 
                 System.out.println("CampaignService - 수정된 캠페인 정보:");

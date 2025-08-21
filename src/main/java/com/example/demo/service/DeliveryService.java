@@ -175,10 +175,11 @@ public class DeliveryService {
             delivery.setMessageTextSent(campaign.getMessage());
             delivery.setCreatedAt(LocalDateTime.now());
             
-            // 랜덤하게 성공/실패 결정 (85% 성공률)
+            // 더 현실적인 성공/실패/대기 분포
+            // 70% 성공, 20% 실패, 10% 대기
             double random = Math.random();
-            if (random < 0.85) {
-                // 성공
+            if (random < 0.70) {
+                // 성공 (70%)
                 delivery.setStatus(DeliveryStatus.SENT);
                 delivery.setSentAt(LocalDateTime.now());
                 
@@ -188,10 +189,13 @@ public class DeliveryService {
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
-            } else {
-                // 실패
+            } else if (random < 0.90) {
+                // 실패 (20%)
                 delivery.setStatus(DeliveryStatus.FAILED);
                 delivery.setErrorCode("SIMULATION_FAILED");
+            } else {
+                // 대기 (10%)
+                delivery.setStatus(DeliveryStatus.PENDING);
             }
             
             Delivery saved = deliveryRepository.save(delivery);

@@ -16,6 +16,7 @@
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/dto/DeliveryDto.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/dto/TargetingLocationDto.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/entity/Campaign.java
+/Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/entity/CampaignStatus.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/entity/Company.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/entity/Customer.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/entity/Delivery.java

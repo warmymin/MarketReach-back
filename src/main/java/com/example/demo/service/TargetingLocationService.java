@@ -46,6 +46,15 @@ public class TargetingLocationService {
         return targetingLocationRepository.findById(id);
     }
     
+    // 숫자 ID로 타겟팅 위치 조회 (프론트엔드 호환성)
+    public Optional<TargetingLocation> getTargetingLocationByNumericId(Long numericId) {
+        // 모든 타겟팅 위치를 조회해서 numericId와 일치하는 것을 찾음
+        List<TargetingLocation> allLocations = targetingLocationRepository.findAll();
+        return allLocations.stream()
+                .filter(location -> location.getId().toString().hashCode() == numericId.intValue())
+                .findFirst();
+    }
+    
     // 회사별 타겟팅 위치 조회
     public List<TargetingLocation> getTargetingLocationsByCompany(UUID companyId) {
         return targetingLocationRepository.findByCompanyIdOrderByCreatedAtDesc(companyId);

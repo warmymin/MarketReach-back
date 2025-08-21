@@ -35,8 +35,9 @@ public class Campaign {
     @Column(columnDefinition = "TEXT")
     private String description;
     
+    @Enumerated(EnumType.STRING)
     @Column
-    private String status = "DRAFT";
+    private CampaignStatus status = CampaignStatus.DRAFT;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = true)
@@ -57,9 +58,6 @@ public class Campaign {
     // DTO용 필드 (JSON 직렬화/역직렬화용)
     @Transient
     private UUID companyId;
-    
-    @Transient
-    private UUID targetingLocationId;
     
     // 생성자
     public Campaign() {
@@ -104,17 +102,10 @@ public class Campaign {
     
     public void setTargetingLocation(TargetingLocation targetingLocation) {
         this.targetingLocation = targetingLocation;
-        if (targetingLocation != null) {
-            this.targetingLocationId = targetingLocation.getId();
-        }
     }
     
     public UUID getTargetingLocationId() {
-        return targetingLocationId;
-    }
-    
-    public void setTargetingLocationId(UUID targetingLocationId) {
-        this.targetingLocationId = targetingLocationId;
+        return targetingLocation != null ? targetingLocation.getId() : null;
     }
     
     public String getDescription() {
@@ -125,12 +116,21 @@ public class Campaign {
         this.description = description;
     }
     
-    public String getStatus() {
+    public CampaignStatus getStatus() {
         return status;
     }
     
-    public void setStatus(String status) {
+    public void setStatus(CampaignStatus status) {
         this.status = status;
+    }
+    
+    // String으로 상태를 받는 메서드 (API 호환성)
+    public void setStatus(String status) {
+        try {
+            this.status = CampaignStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            this.status = CampaignStatus.DRAFT;
+        }
     }
     
     public Company getCompany() {
