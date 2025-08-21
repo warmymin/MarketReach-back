@@ -17,10 +17,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import java.time.LocalDate;
 
 @Service
@@ -43,7 +39,7 @@ public class DeliveryService {
     @Autowired
     private DeliveryStreamService deliveryStreamService;
     
-    private final ExecutorService executorService = Executors.newFixedThreadPool(5);
+    // 병렬 처리 제거로 인한 ExecutorService 제거
     
     /**
      * 캠페인별 총 발송 건수 조회
@@ -101,24 +97,11 @@ public class DeliveryService {
         }
         
         List<Delivery> deliveries = new ArrayList<>();
-        List<CompletableFuture<Delivery>> futures = new ArrayList<>();
         
-        // 각 고객에 대해 발송 시뮬레이션
+        // 각 고객에 대해 순차 발송 시뮬레이션 (더 빠른 처리)
         for (Customer customer : targetCustomers) {
-            CompletableFuture<Delivery> future = CompletableFuture.supplyAsync(() -> {
-                return simulateDeliveryToCustomer(campaign, customer);
-            }, executorService);
-            
-            futures.add(future);
-        }
-        
-        // 모든 발송 완료 대기
-        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
-        
-        // 결과 수집
-        for (CompletableFuture<Delivery> future : futures) {
             try {
-                Delivery delivery = future.get();
+                Delivery delivery = simulateDeliveryToCustomer(campaign, customer);
                 if (delivery != null) {
                     deliveries.add(delivery);
                 }
@@ -205,12 +188,7 @@ public class DeliveryService {
                 delivery.setStatus(DeliveryStatus.SENT);
                 delivery.setSentAt(LocalDateTime.now());
                 
-                // 약간의 지연 시뮬레이션 (0.1~2초)
-                try {
-                    Thread.sleep((long) (Math.random() * 1900 + 100));
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                }
+                // 지연 제거 - 즉시 처리
             } else if (random < 0.90) {
                 // 실패 (20%)
                 delivery.setStatus(DeliveryStatus.FAILED);
@@ -420,10 +398,9 @@ public class DeliveryService {
      * 최근 발송 내역 조회
      */
     public List<Delivery> getRecentDeliveries() {
-        return deliveryRepository.findAll().stream()
-                .sorted((d1, d2) -> d2.getCreatedAt().compareTo(d1.getCreatedAt()))
-                .limit(20)
-                .collect(Collectors.toList());
+        List<Delivery> allDeliveries = deliveryRepository.findAll();
+        allDeliveries.sort((d1, d2) -> d2.getCreatedAt().compareTo(d1.getCreatedAt()));
+        return allDeliveries.stream().limit(20).toList();
     }
 
     /**
