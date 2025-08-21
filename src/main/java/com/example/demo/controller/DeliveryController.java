@@ -322,6 +322,27 @@ public class DeliveryController {
     }
 
     /**
+     * 현재 시간 기준 -4시간부터 현재까지의 시간대별 발송 통계 조회
+     */
+    @GetMapping("/recent-hourly-stats")
+    public ResponseEntity<?> getRecentHourlyStats() {
+        try {
+            List<Map<String, Object>> hourlyStats = deliveryService.getRecentHourlyStats();
+            return ResponseEntity.ok(Map.of(
+                "success", true,
+                "data", hourlyStats,
+                "timestamp", System.currentTimeMillis(),
+                "timezone", "Asia/Seoul"
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                "success", false,
+                "message", "최근 시간대별 통계 조회 중 오류가 발생했습니다: " + e.getMessage()
+            ));
+        }
+    }
+
+    /**
      * 최근 30분간 5분 단위 발송 현황
      */
     @GetMapping("/recent-timeslot")

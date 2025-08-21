@@ -580,6 +580,34 @@ public class DeliveryService {
     }
 
     /**
+     * 현재 시간 기준 -4시간부터 현재까지의 시간대별 발송 통계 조회
+     */
+    public List<Map<String, Object>> getRecentHourlyStats() {
+        ZoneId koreaZone = ZoneId.of("Asia/Seoul");
+        LocalDateTime now = LocalDateTime.now(koreaZone);
+        
+        List<Map<String, Object>> result = new ArrayList<>();
+        
+        // 현재 시간부터 -4시간까지 5개 시간대 생성
+        for (int i = 4; i >= 0; i--) {
+            LocalDateTime targetTime = now.minusHours(i);
+            LocalDateTime hourStart = targetTime.withMinute(0).withSecond(0).withNano(0);
+            LocalDateTime hourEnd = hourStart.plusHours(1);
+            
+            // 해당 시간대의 총 발송 건수 조회
+            long totalCount = deliveryRepository.countByCreatedAtBetween(hourStart, hourEnd);
+            
+            Map<String, Object> hourStat = new HashMap<>();
+            hourStat.put("hour", hourStart.getHour()); // 숫자로 반환 (예: 15)
+            hourStat.put("count", totalCount);
+            
+            result.add(hourStat);
+        }
+        
+        return result;
+    }
+
+    /**
      * 지역별 발송 분포 조회 (실제 데이터 기반)
      */
     public List<Map<String, Object>> getRegionDistributionReal() {
