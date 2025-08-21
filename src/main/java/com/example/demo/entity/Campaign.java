@@ -32,6 +32,8 @@ public class Campaign {
     @JsonBackReference("targeting-location-campaigns")
     private TargetingLocation targetingLocation;
     
+
+    
     @Column(columnDefinition = "TEXT")
     private String description;
     

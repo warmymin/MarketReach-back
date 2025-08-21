@@ -8,6 +8,7 @@ import com.example.demo.repository.DeliveryRepository;
 import com.example.demo.repository.CampaignRepository;
 import com.example.demo.repository.CustomerRepository;
 import com.example.demo.repository.TargetingLocationRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import java.time.LocalDate;
 
 @Service
 public class DeliveryService {
@@ -36,6 +38,8 @@ public class DeliveryService {
     @Autowired
     private TargetingLocationRepository targetingLocationRepository;
     
+
+    
     @Autowired
     private DeliveryStreamService deliveryStreamService;
     
@@ -49,23 +53,17 @@ public class DeliveryService {
         Campaign campaign = campaignRepository.findById(campaignId)
                 .orElseThrow(() -> new RuntimeException("캠페인을 찾을 수 없습니다."));
         
-        if (campaign.getTargetingLocation() == null) {
-            Map<String, Object> result = new HashMap<>();
-            result.put("totalDeliveries", 0);
-            result.put("sentCount", 0);
-            result.put("failedCount", 0);
-            result.put("pendingCount", 0);
-            result.put("successRate", 0.0);
-            result.put("message", "타겟팅 위치가 설정되지 않았습니다.");
-            return result;
-        }
+        List<Customer> targetCustomers = new ArrayList<>();
         
-        // 타겟팅 위치의 반경 내 고객들 조회
-        List<Customer> targetCustomers = customerRepository.findCustomersNearLocation(
-                campaign.getTargetingLocation().getCenterLat(),
-                campaign.getTargetingLocation().getCenterLng(),
-                campaign.getTargetingLocation().getRadiusM()
-        );
+        // 타겟팅 위치가 있는 경우
+        if (campaign.getTargetingLocation() != null) {
+            targetCustomers = customerRepository.findCustomersNearLocation(
+                    campaign.getTargetingLocation().getCenterLat(),
+                    campaign.getTargetingLocation().getCenterLng(),
+                    campaign.getTargetingLocation().getRadiusM()
+            );
+        }
+
         
         if (targetCustomers.isEmpty()) {
             Map<String, Object> result = new HashMap<>();
@@ -74,7 +72,7 @@ public class DeliveryService {
             result.put("failedCount", 0);
             result.put("pendingCount", 0);
             result.put("successRate", 0.0);
-            result.put("message", "타겟 고객이 없습니다.");
+            result.put("message", "타겟팅이 설정되지 않았거나 타겟 고객이 없습니다.");
             return result;
         }
         
@@ -632,5 +630,89 @@ public class DeliveryService {
         }
         
         return "기타";
+    }
+
+    /**
+     * 최근 30분간 5분 단위 발송 현황 조회
+     */
+    public Map<String, Object> getRecentDeliveriesByTimeSlot() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime thirtyMinutesAgo = now.minusMinutes(30);
+        
+        List<Map<String, Object>> timeSlots = new ArrayList<>();
+        
+        // 5분 간격으로 6개 구간 생성 (30분)
+        for (int i = 0; i < 6; i++) {
+            LocalDateTime slotStart = thirtyMinutesAgo.plusMinutes(i * 5);
+            LocalDateTime slotEnd = slotStart.plusMinutes(5);
+            
+            // 해당 시간대의 발송 데이터 조회
+            List<Delivery> deliveries = deliveryRepository.findByCreatedAtBetween(slotStart, slotEnd);
+            
+            int totalCount = deliveries.size();
+            int successCount = (int) deliveries.stream()
+                .filter(d -> d.getStatus() == DeliveryStatus.SENT)
+                .count();
+            int failedCount = (int) deliveries.stream()
+                .filter(d -> d.getStatus() == DeliveryStatus.FAILED)
+                .count();
+            
+            Map<String, Object> slot = new HashMap<>();
+            slot.put("time", slotStart.format(DateTimeFormatter.ofPattern("HH:mm")));
+            slot.put("total", totalCount);
+            slot.put("success", successCount);
+            slot.put("failed", failedCount);
+            
+            timeSlots.add(slot);
+        }
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("data", timeSlots);
+        result.put("period", "최근 30분간 5분 단위");
+        
+        return result;
+    }
+    
+    /**
+     * 오늘 시간대별 발송 통계 조회
+     */
+    public Map<String, Object> getHourlyDeliveries() {
+        LocalDateTime todayStart = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime todayEnd = LocalDateTime.now().withHour(23).withMinute(59).withSecond(59).withNano(999999999);
+        
+        List<Map<String, Object>> hourlyStats = new ArrayList<>();
+        
+        // 24시간 데이터 생성
+        for (int hour = 0; hour < 24; hour++) {
+            LocalDateTime hourStart = todayStart.plusHours(hour);
+            LocalDateTime hourEnd = hourStart.plusHours(1).minusNanos(1);
+            
+            // 해당 시간대의 발송 데이터 조회
+            List<Delivery> deliveries = deliveryRepository.findByCreatedAtBetween(hourStart, hourEnd);
+            
+            int totalCount = deliveries.size();
+            int successCount = (int) deliveries.stream()
+                .filter(d -> d.getStatus() == DeliveryStatus.SENT)
+                .count();
+            int failedCount = (int) deliveries.stream()
+                .filter(d -> d.getStatus() == DeliveryStatus.FAILED)
+                .count();
+            
+            Map<String, Object> hourData = new HashMap<>();
+            hourData.put("hour", String.format("%02d:00", hour));
+            hourData.put("total", totalCount);
+            hourData.put("success", successCount);
+            hourData.put("failed", failedCount);
+            
+            hourlyStats.add(hourData);
+        }
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("success", true);
+        result.put("data", hourlyStats);
+        result.put("date", LocalDate.now().toString());
+        
+        return result;
     }
 }

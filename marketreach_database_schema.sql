@@ -126,35 +126,108 @@ INSERT INTO companies (name, industry, business_number, address, phone, email) V
 ('삼성전자', '전자제품', '789-01-23456', '경기도 수원시 영통구 삼성로 129', '031-7890-1234', 'contact@samsung.com'),
 ('현대자동차', '자동차', '321-54-67890', '서울특별시 강남구 테헤란로 140', '02-3215-4678', 'contact@hyundai.com');
 
--- 고객 데이터 (서울 주요 지역별)
-INSERT INTO customers (name, phone, lat, lng, dong_code) VALUES
--- 강남구 고객들
-('김철수', '010-1111-1111', 37.498000, 127.027600, '1168010100'),
-('이영희', '010-1111-1112', 37.497500, 127.028000, '1168010100'),
-('박민수', '010-1111-1113', 37.498500, 127.027000, '1168010100'),
-('최지영', '010-1111-1114', 37.499000, 127.026500, '1168010100'),
-('정수민', '010-1111-1115', 37.496500, 127.029000, '1168010100'),
+-- 고객 데이터 (서울 주요 지역별) - 500명 생성
+-- 강남구 고객들 (100명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD(ROW_NUMBER() OVER ()::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.498000 + (RANDOM() - 0.5) * 0.01 as lat,
+    127.027600 + (RANDOM() - 0.5) * 0.01 as lng,
+    '1168010100' as dong_code
+FROM generate_series(1, 100);
 
--- 홍대/마포구 고객들
-('한미영', '010-2222-2221', 37.557000, 126.925000, '1144012400'),
-('송태호', '010-2222-2222', 37.556500, 126.925500, '1144012400'),
-('김민지', '010-2222-2223', 37.555000, 126.936000, '1144012400'),
-('이준호', '010-2222-2224', 37.555500, 126.936500, '1144012400'),
-('박서연', '010-2222-2225', 37.558000, 126.924000, '1144012400'),
+-- 홍대/마포구 고객들 (80명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 100)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.557000 + (RANDOM() - 0.5) * 0.008 as lat,
+    126.925000 + (RANDOM() - 0.5) * 0.008 as lng,
+    '1144012400' as dong_code
+FROM generate_series(1, 80);
 
--- 명동/중구 고객들
-('최동현', '010-3333-3331', 37.563000, 126.983000, '1114010100'),
-('정유진', '010-3333-3332', 37.562500, 126.983500, '1114010100'),
-('한승우', '010-3333-3333', 37.564000, 126.982500, '1114010100'),
-('김소영', '010-3333-3334', 37.561500, 126.984000, '1114010100'),
-('이현수', '010-3333-3335', 37.565000, 126.982000, '1114010100'),
+-- 명동/중구 고객들 (70명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 180)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.563000 + (RANDOM() - 0.5) * 0.006 as lat,
+    126.983000 + (RANDOM() - 0.5) * 0.006 as lng,
+    '1114010100' as dong_code
+FROM generate_series(1, 70);
 
--- 강북구 고객들
-('박지원', '010-4444-4441', 37.639000, 127.025000, '1130510100'),
-('최민석', '010-4444-4442', 37.638500, 127.025500, '1130510100'),
-('정하은', '010-4444-4443', 37.640000, 127.024500, '1130510100'),
-('김태현', '010-4444-4444', 37.637500, 127.026000, '1130510100'),
-('이수빈', '010-4444-4445', 37.641000, 127.024000, '1130510100');
+-- 강북구 고객들 (60명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 250)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.639000 + (RANDOM() - 0.5) * 0.008 as lat,
+    127.025000 + (RANDOM() - 0.5) * 0.008 as lng,
+    '1130510100' as dong_code
+FROM generate_series(1, 60);
+
+-- 서초구 고객들 (50명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 310)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.483000 + (RANDOM() - 0.5) * 0.01 as lat,
+    127.032000 + (RANDOM() - 0.5) * 0.01 as lng,
+    '1165010100' as dong_code
+FROM generate_series(1, 50);
+
+-- 송파구 고객들 (40명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 360)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.514000 + (RANDOM() - 0.5) * 0.012 as lat,
+    127.105000 + (RANDOM() - 0.5) * 0.012 as lng,
+    '1171010100' as dong_code
+FROM generate_series(1, 40);
+
+-- 영등포구 고객들 (40명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 400)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.526000 + (RANDOM() - 0.5) * 0.01 as lat,
+    126.896000 + (RANDOM() - 0.5) * 0.01 as lng,
+    '1156010100' as dong_code
+FROM generate_series(1, 40);
+
+-- 종로구 고객들 (30명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 440)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.573000 + (RANDOM() - 0.5) * 0.008 as lat,
+    126.979000 + (RANDOM() - 0.5) * 0.008 as lng,
+    '1111010100' as dong_code
+FROM generate_series(1, 30);
+
+-- 성동구 고객들 (30명)
+INSERT INTO customers (name, phone, lat, lng, dong_code)
+SELECT 
+    '고객' || LPAD((ROW_NUMBER() OVER () + 470)::TEXT, 3, '0') as name,
+    '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') as phone,
+    37.550000 + (RANDOM() - 0.5) * 0.01 as lat,
+    127.040000 + (RANDOM() - 0.5) * 0.01 as lng,
+    '1120010100' as dong_code
+FROM generate_series(1, 30);
+
+-- 전화번호 중복 방지를 위한 업데이트
+UPDATE customers 
+SET phone = '010-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0') || '-' || LPAD(FLOOR(RANDOM() * 9999)::TEXT, 4, '0')
+WHERE id IN (
+    SELECT id FROM customers 
+    WHERE phone IN (
+        SELECT phone FROM customers 
+        GROUP BY phone 
+        HAVING COUNT(*) > 1
+    )
+);
 
 -- 위치 기반 타겟팅 데이터
 INSERT INTO targeting_locations (company_id, name, center_lat, center_lng, radius_m, memo) VALUES

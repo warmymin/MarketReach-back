@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/api/deliveries")
@@ -317,6 +318,38 @@ public class DeliveryController {
                 "success", false,
                 "message", "시간대별 통계 조회 중 오류가 발생했습니다: " + e.getMessage()
             ));
+        }
+    }
+
+    /**
+     * 최근 30분간 5분 단위 발송 현황
+     */
+    @GetMapping("/recent-timeslot")
+    public ResponseEntity<?> getRecentDeliveriesByTimeSlot() {
+        try {
+            Map<String, Object> result = deliveryService.getRecentDeliveriesByTimeSlot();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "최근 발송 현황 조회 중 오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    /**
+     * 오늘 시간대별 발송 통계
+     */
+    @GetMapping("/hourly")
+    public ResponseEntity<?> getHourlyDeliveries() {
+        try {
+            Map<String, Object> result = deliveryService.getHourlyDeliveries();
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "시간대별 발송 통계 조회 중 오류가 발생했습니다: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 }

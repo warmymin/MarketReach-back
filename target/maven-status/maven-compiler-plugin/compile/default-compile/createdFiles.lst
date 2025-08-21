@@ -1,10 +1,12 @@
 com/example/demo/config/WebConfig.class
+com/example/demo/entity/CampaignStatus.class
 com/example/demo/entity/Delivery$DeliveryStatus.class
 com/example/demo/dto/DeliveryDto.class
 com/example/demo/controller/DeliveryStreamController.class
 com/example/demo/controller/CompanyController.class
 com/example/demo/controller/CustomerController.class
 com/example/demo/KtMarketReachApplication.class
+com/example/demo/controller/TestController.class
 com/example/demo/dto/CompanyDto.class
 com/example/demo/entity/Company.class
 com/example/demo/controller/HealthController.class
@@ -23,6 +25,8 @@ com/example/demo/service/DeliveryService$1.class
 com/example/demo/service/TargetingLocationService.class
 com/example/demo/repository/CustomerRepository.class
 com/example/demo/service/CustomerService.class
+com/example/demo/controller/StatisticsController.class
+com/example/demo/service/CampaignService.class
 com/example/demo/controller/TargetingLocationController.class
 com/example/demo/config/DataInitializer.class
 com/example/demo/service/CompanyService.class

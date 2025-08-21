@@ -76,4 +76,6 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
            "GROUP BY EXTRACT(HOUR FROM d.createdAt), d.status " +
            "ORDER BY hour, d.status")
     List<Object[]> getTodayHourlyStatsByStatus();
+
+
 }

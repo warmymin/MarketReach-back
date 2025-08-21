@@ -4,9 +4,11 @@ import com.example.demo.entity.Campaign;
 import com.example.demo.entity.CampaignStatus;
 import com.example.demo.entity.Company;
 import com.example.demo.entity.TargetingLocation;
+
 import com.example.demo.service.CampaignService;
 import com.example.demo.service.CompanyService;
 import com.example.demo.service.TargetingLocationService;
+
 import com.example.demo.service.DeliveryService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -39,6 +41,8 @@ public class CampaignController {
     
     @Autowired
     private DeliveryService deliveryService;
+    
+
 
     // 1) 캠페인 생성
     @PostMapping
@@ -92,6 +96,8 @@ public class CampaignController {
                 
                 targetingLocation = targetingLocationOpt.get();
             }
+            
+
             
             // Campaign 객체 생성
             Campaign campaign = new Campaign();
