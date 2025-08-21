@@ -33,6 +33,8 @@ public class Campaign {
     @JsonBackReference("targeting-location-campaigns")
     private TargetingLocation targetingLocation;
     
+    @Column(name = "targeting_location_id", insertable = false, updatable = false)
+    private UUID targetingLocationId;
 
     
     @Column(columnDefinition = "TEXT")
@@ -54,6 +56,7 @@ public class Campaign {
     private Company company;
     
     @Column(name = "created_at", nullable = false, updatable = false)
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdAt;
     
     @OneToMany(mappedBy = "campaign", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -114,7 +117,11 @@ public class Campaign {
     }
     
     public UUID getTargetingLocationId() {
-        return targetingLocation != null ? targetingLocation.getId() : null;
+        return targetingLocationId;
+    }
+    
+    public void setTargetingLocationId(UUID targetingLocationId) {
+        this.targetingLocationId = targetingLocationId;
     }
     
     public String getDescription() {

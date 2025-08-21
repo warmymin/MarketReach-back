@@ -8,10 +8,12 @@
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/DeliveryController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/DeliveryStreamController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/HealthController.java
+/Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/ImageController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/StatisticsController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/TargetingLocationController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/TestController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/dto/CampaignDto.java
+/Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/dto/CampaignStatsDto.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/dto/CompanyDto.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/dto/CustomerDto.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/dto/DeliveryDto.java

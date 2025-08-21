@@ -91,4 +91,11 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
            "WHERE CAST(d.createdAt AS DATE) = :date " +
            "GROUP BY EXTRACT(HOUR FROM d.createdAt) ORDER BY hour")
     List<Object[]> getHourlyDeliveryStatsByDate(@Param("date") LocalDate date);
+    
+    // 캠페인별 총 발송 건수 조회
+    long countByCampaignId(UUID campaignId);
+    
+    // 캠페인별 특정 상태들의 발송 건수 조회
+    @Query("SELECT COUNT(d) FROM Delivery d WHERE d.campaign.id = :campaignId AND d.status IN :statuses")
+    long countByCampaignIdAndStatusIn(@Param("campaignId") UUID campaignId, @Param("statuses") List<DeliveryStatus> statuses);
 }

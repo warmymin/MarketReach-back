@@ -5,6 +5,7 @@ import com.example.demo.entity.CampaignStatus;
 import com.example.demo.entity.Company;
 import com.example.demo.entity.TargetingLocation;
 
+
 import com.example.demo.service.CampaignService;
 import com.example.demo.service.CompanyService;
 import com.example.demo.service.TargetingLocationService;
@@ -137,6 +138,59 @@ public class CampaignController {
     @GetMapping
     public ResponseEntity<?> getAllCampaigns() {
         return ResponseEntity.ok(Map.of("success", true, "data", campaignService.getAllCampaigns()));
+    }
+    
+    // 2-1) 캠페인별 통계 정보 조회
+    @GetMapping("/{id}/stats")
+    public ResponseEntity<?> getCampaignStats(@PathVariable UUID id) {
+        try {
+            Optional<Campaign> campaignOpt = campaignService.getCampaignById(id);
+            if (campaignOpt.isEmpty()) {
+                return ResponseEntity.status(404).body(Map.of(
+                    "success", false,
+                    "message", "캠페인을 찾을 수 없습니다."
+                ));
+            }
+            
+            Campaign campaign = campaignOpt.get();
+            Map<String, Object> stats = new HashMap<>();
+            
+            // 타겟팅 정보 - targetingLocationId로 직접 조회
+            UUID targetingLocationId = campaign.getTargetingLocationId();
+            if (targetingLocationId != null) {
+                Optional<TargetingLocation> targetingLocationOpt = targetingLocationService.getTargetingLocationById(targetingLocationId);
+                if (targetingLocationOpt.isPresent()) {
+                    TargetingLocation location = targetingLocationOpt.get();
+                    stats.put("targetingLocationName", location.getName());
+                    stats.put("targetingRadiusM", location.getRadiusM());
+                } else {
+                    stats.put("targetingLocationName", null);
+                    stats.put("targetingRadiusM", null);
+                }
+            } else {
+                stats.put("targetingLocationName", null);
+                stats.put("targetingRadiusM", null);
+            }
+            
+            // 발송 통계
+            long totalDeliveries = deliveryService.countDeliveriesByCampaignId(id);
+            long successfulDeliveries = deliveryService.countSuccessfulDeliveriesByCampaignId(id);
+            double successRate = totalDeliveries > 0 ? (double) successfulDeliveries / totalDeliveries * 100 : 0.0;
+            
+            stats.put("totalDeliveries", totalDeliveries);
+            stats.put("successfulDeliveries", successfulDeliveries);
+            stats.put("successRate", Math.round(successRate * 100.0) / 100.0);
+            
+            return ResponseEntity.ok(Map.of("success", true, "data", stats));
+            
+        } catch (Exception e) {
+            System.err.println("캠페인 통계 조회 오류: " + e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(Map.of(
+                "success", false,
+                "message", "통계 정보 조회 중 오류가 발생했습니다: " + e.getMessage()
+            ));
+        }
     }
 
     // 3) 단건 조회

@@ -46,6 +46,23 @@ public class DeliveryService {
     private final ExecutorService executorService = Executors.newFixedThreadPool(5);
     
     /**
+     * 캠페인별 총 발송 건수 조회
+     */
+    public long countDeliveriesByCampaignId(UUID campaignId) {
+        return deliveryRepository.countByCampaignId(campaignId);
+    }
+    
+    /**
+     * 캠페인별 성공한 발송 건수 조회
+     */
+    public long countSuccessfulDeliveriesByCampaignId(UUID campaignId) {
+        return deliveryRepository.countByCampaignIdAndStatusIn(
+            campaignId, 
+            List.of(DeliveryStatus.SENT, DeliveryStatus.SUCCESS)
+        );
+    }
+    
+    /**
      * 캠페인 발송 시뮬레이션
      */
     @Transactional
