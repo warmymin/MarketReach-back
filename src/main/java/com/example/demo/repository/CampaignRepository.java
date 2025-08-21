@@ -60,4 +60,16 @@ public interface CampaignRepository extends JpaRepository<Campaign, UUID> {
             return campaign;
         }).toList();
     }
+
+    /**
+     * 최근 캠페인 목록과 통계 조회
+     */
+    @Query("SELECT c.id, c.name, c.status, c.createdAt, tl.name as locationName, " +
+           "COUNT(d) as messageCount " +
+           "FROM Campaign c " +
+           "LEFT JOIN c.targetingLocation tl " +
+           "LEFT JOIN Delivery d ON d.campaign = c " +
+           "GROUP BY c.id, c.name, c.status, c.createdAt, tl.name " +
+           "ORDER BY c.createdAt DESC")
+    List<Object[]> getRecentCampaignsWithStats();
 }

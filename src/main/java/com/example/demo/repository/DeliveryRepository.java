@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -77,5 +78,17 @@ public interface DeliveryRepository extends JpaRepository<Delivery, UUID> {
            "ORDER BY hour, d.status")
     List<Object[]> getTodayHourlyStatsByStatus();
 
-
+    /**
+     * 특정 상태의 고유 고객 ID 수 조회
+     */
+    @Query("SELECT COUNT(DISTINCT d.customer.id) FROM Delivery d WHERE d.status = :status")
+    long countDistinctCustomerIdByStatus(@Param("status") Delivery.DeliveryStatus status);
+    
+    /**
+     * 특정 날짜의 시간대별 발송 통계 조회
+     */
+    @Query("SELECT EXTRACT(HOUR FROM d.createdAt) as hour, COUNT(d) as count FROM Delivery d " +
+           "WHERE CAST(d.createdAt AS DATE) = :date " +
+           "GROUP BY EXTRACT(HOUR FROM d.createdAt) ORDER BY hour")
+    List<Object[]> getHourlyDeliveryStatsByDate(@Param("date") LocalDate date);
 }

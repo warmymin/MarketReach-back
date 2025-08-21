@@ -4,6 +4,7 @@
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/CampaignController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/CompanyController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/CustomerController.java
+/Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/DashboardController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/DeliveryController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/DeliveryStreamController.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/controller/HealthController.java
@@ -29,6 +30,7 @@
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/service/CampaignService.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/service/CompanyService.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/service/CustomerService.java
+/Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/service/DashboardService.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/service/DeliveryService.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/service/DeliveryStreamService.java
 /Users/warm/Desktop/project/MarketReach_2/backend/src/main/java/com/example/demo/service/TargetingLocationService.java

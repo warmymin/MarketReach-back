@@ -94,4 +94,10 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
             return customer;
         }).toList();
     }
+
+    /**
+     * 지역별 고객 분포 조회 (dongCode 기준)
+     */
+    @Query("SELECT c.dongCode, COUNT(c) FROM Customer c GROUP BY c.dongCode ORDER BY COUNT(c) DESC")
+    List<Object[]> getCustomerDistributionByRegion();
 }

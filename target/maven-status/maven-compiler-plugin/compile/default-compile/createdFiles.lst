@@ -6,7 +6,6 @@ com/example/demo/controller/DeliveryStreamController.class
 com/example/demo/controller/CompanyController.class
 com/example/demo/controller/CustomerController.class
 com/example/demo/KtMarketReachApplication.class
-com/example/demo/controller/TestController.class
 com/example/demo/dto/CompanyDto.class
 com/example/demo/entity/Company.class
 com/example/demo/controller/HealthController.class
