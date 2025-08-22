@@ -7,7 +7,7 @@ Spring Boot 기반의 마케팅 캠페인 관리 시스템 백엔드 API입니�
 - **Java 17**
 - **Spring Boot 3.x**
 - **Spring Data JPA**
-- **H2 Database** (개발용)
+- **PostgreSQL** (데이터베이스)
 - **Maven**
 
 ## 프로젝트 구조
@@ -36,6 +36,8 @@ src/main/java/com/example/demo/
 
 - Java 17 이상 설치
 - Maven 설치 (또는 프로젝트에 포함된 Maven Wrapper 사용)
+- PostgreSQL 설치 및 실행
+- 데이터베이스 `marketreach` 생성
 
 ### 2. 프로젝트 실행
 
@@ -50,10 +52,7 @@ mvn spring-boot:run
 ### 3. 애플리케이션 접속
 
 - **API 서버**: http://localhost:8080
-- **H2 콘솔**: http://localhost:8080/h2-console
-  - JDBC URL: `jdbc:h2:mem:testdb`
-  - Username: `sa`
-  - Password: (비어있음)
+- **PostgreSQL 데이터베이스**: localhost:5432
 
 ## API 엔드포인트
 
@@ -98,30 +97,32 @@ node create-100-customers.js
 필요한 경우 SQL 스크립트를 실행하여 스키마를 업데이트할 수 있습니다:
 
 ```bash
-# 완전한 스키마 마이그레이션
-mysql -u username -p database_name < complete_schema_migration.sql
+# PostgreSQL 스키마 마이그레이션
+psql -U username -d database_name -f complete_schema_migration.sql
 ```
 
 ## 개발 환경 설정
 
 ### application.properties
 
-개발 환경에서는 `application-h2.properties`가 사용됩니다:
+PostgreSQL 데이터베이스 설정:
 
 ```properties
-# H2 데이터베이스 설정
-spring.datasource.url=jdbc:h2:mem:testdb
-spring.datasource.driverClassName=org.h2.Driver
-spring.datasource.username=sa
-spring.datasource.password=
+# PostgreSQL 데이터베이스 설정
+spring.datasource.url=jdbc:postgresql://localhost:5432/marketreach
+spring.datasource.driverClassName=org.postgresql.Driver
+spring.datasource.username=postgres
+spring.datasource.password=your_password
 
 # JPA 설정
-spring.jpa.database-platform=org.hibernate.dialect.H2Dialect
-spring.jpa.hibernate.ddl-auto=create-drop
+spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+spring.jpa.hibernate.ddl-auto=update
 spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
 
-# H2 콘솔 활성화
-spring.h2.console.enabled=true
+# PostgreSQL 연결 풀 설정
+spring.datasource.hikari.maximum-pool-size=10
+spring.datasource.hikari.minimum-idle=5
 ```
 
 ## 빌드 및 배포
@@ -144,7 +145,12 @@ server.port=8081
 ```
 
 ### 데이터베이스 연결 문제
-H2 데이터베이스가 제대로 시작되지 않는 경우 애플리케이션 로그를 확인하세요.
+PostgreSQL 데이터베이스가 제대로 시작되지 않는 경우 다음을 확인하세요:
+
+1. PostgreSQL 서비스가 실행 중인지 확인
+2. 데이터베이스 `marketreach`가 생성되었는지 확인
+3. 사용자 권한이 올바른지 확인
+4. 애플리케이션 로그를 확인
 
 ## 라이센스
 
